@@ -1,0 +1,17 @@
+/*Challenge 1*/
+
+with t1 as 
+(select h.hacker_id, h.name, count(c.challenge_id) as num
+from hackers as h join challenges as c on h.hacker_id = c.hacker_id
+group by h.hacker_id, h.name
+order by num desc, hacker_id asc),
+
+t2 as 
+(select count(*) as num_hackers, num
+from t1
+group by num
+order by num desc)
+    
+select t1.hacker_id, t1.name, t1.num
+from t1 join t2 on t1.num = t2.num
+where t2.num_hackers = 1 or t1.num = (select max(num) from t1);
